@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Gemini Chat</title>
+</head>
+<body>
+  <h1>چت با Gemini</h1>
+  <textarea id="input" rows="4" cols="50" placeholder="یه سوال بنویس..."></textarea><br>
+  <button onclick="askGemini()">بپرس</button>
+  <h3>پاسخ:</h3>
+  <pre id="response"></pre>
+
+  <script>
+    async function askGemini() {
+      const inputText = document.getElementById("input").value;
+      const responseElem = document.getElementById("response");
+
+      const apiKey = "AIzaSyCZcCfxLCPCj49HvJvUQNj_SiV0QWw35Uc"; // استفاده فقط برای تست
+
+      const body = {
+        "contents": [
+          { "parts": [{ "text": inputText }] }
+        ]
+      };
+
+      const res = await fetch("https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=" + apiKey, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(body)
+      });
+
+      const data = await res.json();
+      console.log(data);
+
+      if (data.candidates && data.candidates.length > 0) {
+        responseElem.textContent = data.candidates[0].content.parts[0].text;
+      } else {
+        responseElem.textContent = "پاسخی دریافت نشد.";
+      }
+    }
+  </script>
+</body>
+</html>
